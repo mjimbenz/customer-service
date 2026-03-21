@@ -30,7 +30,55 @@
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2025.1.0</spring-cloud.version>
+		<jacoco.version>0.8.8</jacoco.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<sonar.host.url>http://localhost:9095</sonar.host.url>
+		<sonar.token>sqa_ef8372fbe2c1903967293cf96b16fc77fbed1ce3</sonar.token>
+		<mapstruct.version>1.5.5.Final</mapstruct.version>
+		<rxjava3.version>3.1.8</rxjava3.version>
+		<confluent.version>7.6.1</confluent.version>
+		<avro.version>1.11.3</avro.version>
+		<springdoc.version>2.6.0</springdoc.version>
+		<resilience4j.version>2.2.0</resilience4j.version>
+		<argLine/>
+		<jacoco.version>0.8.11</jacoco.version>
 	</properties>
+
+	<repositories>
+		<!-- Maven Central (Resilience4j vive aquí) -->
+		<repository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+			<releases><enabled>true</enabled></releases>
+			<snapshots><enabled>false</enabled></snapshots>
+		</repository>
+
+		<!-- Confluent (para kafka-avro-serializer) -->
+		<repository>
+			<id>confluent</id>
+			<name>Confluent</name>
+			<url>https://packages.confluent.io/maven/</url>
+			<releases><enabled>true</enabled></releases>
+			<snapshots><enabled>false</enabled></snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+			<releases><enabled>true</enabled></releases>
+			<snapshots><enabled>false</enabled></snapshots>
+		</pluginRepository>
+
+		<pluginRepository>
+			<id>confluent</id>
+			<name>Confluent</name>
+			<url>https://packages.confluent.io/maven/</url>
+			<releases><enabled>true</enabled></releases>
+			<snapshots><enabled>false</enabled></snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<dependencies>
 
@@ -70,11 +118,109 @@
 			<artifactId>rxjava</artifactId>
 		</dependency>
 
-		<!-- Lombok -->
+		<!-- MapStruct + Lombok (Factory/Builder) -->
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>1.5.5.Final</version>
+		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Validación DTOs -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<!-- Kafka Producer -->
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+		</dependency>
+		<!-- Avro serializer (Confluent) -->
+		<dependency>
+			<groupId>io.confluent</groupId>
+			<artifactId>kafka-avro-serializer</artifactId>
+			<version>${confluent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>avro</artifactId>
+			<version>${avro.version}</version>
+		</dependency>
+
+		<!-- Resilience4j (Decorator para publisher) -->
+		<dependency>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-spring-boot3</artifactId>
+			<version>${resilience4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-rxjava3</artifactId>
+			<version>${resilience4j.version}</version>
+		</dependency>
+
+		<!-- OpenAPI / Swagger UI -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>${springdoc.version}</version>
+		</dependency>
+
+		<!-- Micrometer Prometheus: exporta métricas en formato Prometheus -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+
+		<!-- Logstash Encoder para enviar logs a Elastic -->
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>7.4</version>
+		</dependency>
+
+
+		<!-- Logger -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-annotations-jakarta</artifactId>
+			<version>2.2.22</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-models-jakarta</artifactId>
+			<version>2.2.22</version>
+		</dependency>
+
+		<!-- JsonNullable -->
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.6</version>
+		</dependency>
+
 
 	</dependencies>
 
@@ -89,6 +235,203 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<!-- Empaquetar ejecutable -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.bankx.TransactionsServiceApplication</mainClass>
+				</configuration>
+			</plugin>
+
+			<!-- (Opcional) Asegurar compilación a Java 17 cuando haga falta -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+
+			<!-- (Opcional) Surefire moderno para JUnit 5 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.2.5</version>
+			</plugin>
+
+			<!-- JaCoCo plugin -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<phase>test-compile</phase>
+						<goals><goal>prepare-agent</goal></goals>
+						<configuration>
+							<destFile>${project.build.directory}/jacoco.exec</destFile>
+							<append>false</append>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals><goal>report</goal></goals>
+						<configuration>
+							<dataFile>${project.build.directory}/jacoco.exec</dataFile>
+							<outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
+							<formats>
+								<reportFormat>HTML</reportFormat>
+								<reportFormat>XML</reportFormat>
+							</formats>
+							<excludes>
+								<exclude>**/config/**</exclude>
+								<exclude>com/bank/events/**</exclude>
+								<exclude>**/*Application*</exclude>
+								<exclude>**/dto/**</exclude>
+								<exclude>**/exception/**</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>check</id>
+						<phase>verify</phase>
+						<goals><goal>check</goal></goals>
+						<configuration>
+							<dataFile>${project.build.directory}/jacoco.exec</dataFile>
+							<rules>
+								<rule>
+									<element>BUNDLE</element>
+									<limits>
+										<limit>
+											<counter>INSTRUCTION</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.0</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Checkstyle plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.3.1</version>
+
+				<executions>
+
+					<!-- Ejecución principal: genera reporte XML + muestra en consola -->
+					<execution>
+						<id>validate-style</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>checkstyle</goal>
+						</goals>
+
+						<configuration>
+							<!-- Config base -->
+							<configLocation>google_checks.xml</configLocation>
+							<!--							<encoding>UTF-8</encoding>-->
+
+							<!-- Consola -->
+							<consoleOutput>true</consoleOutput>
+							<!--							<logViolationsToConsole>true</logViolationsToConsole>-->
+
+							<!-- NO romper el build -->
+							<failsOnError>false</failsOnError>
+							<!--							<violationSeverity>warning</violationSeverity>-->
+
+							<!-- Reportes -->
+							<outputFile>${project.build.directory}/checkstyle-result.xml</outputFile>
+							<outputFileFormat>xml</outputFileFormat>
+
+							<!-- Incluir test -->
+							<includeTestSourceDirectory>true</includeTestSourceDirectory>
+						</configuration>
+					</execution>
+
+					<!-- Reporte HTML cuando generes el site -->
+					<execution>
+						<id>html-report</id>
+						<phase>site</phase>
+						<goals>
+							<goal>checkstyle</goal>
+						</goals>
+					</execution>
+
+				</executions>
+			</plugin>
+			<!-- Opcional: generar HTML con site -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.12.1</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.11.0.3922</version>
+			</plugin>
+
+			<!-- Skip tests en este laboratorio -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.2.5</version>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>7.7.0</version>
+				<executions>
+					<execution>
+						<id>generate-product-api</id>
+						<goals><goal>generate</goal></goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/product-openapi.yaml</inputSpec>
+							<generatorName>spring</generatorName>
+							<output>${project.build.directory}/generated-sources/openapi</output>
+							<apiPackage>com.bank.customer-service.api</apiPackage>
+							<modelPackage>com.bank.customer-service.api.model</modelPackage>
+							<configOptions>
+								<delegatePattern>true</delegatePattern>
+								<reactive>true</reactive>
+								<useSpringBoot3>true</useSpringBoot3>
+								<useTags>true</useTags>
+							</configOptions>
+							<generateApiTests>false</generateApiTests>
+							<generateModelTests>false</generateModelTests>
+							<globalProperties>
+								<apis/>
+								<models/>
+								<supportingFiles/>
+							</globalProperties>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+
+		</plugins>
+	</build>
 
 </project>
 
