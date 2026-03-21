@@ -22,6 +22,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<jacoco.version>0.8.8</jacoco.version>
+		<sonar.host.url>http://localhost:9095</sonar.host.url>
+		<sonar.token>sqa_42487ae4f625ebe7af4a79af5dc2803c78d7afe4</sonar.token>
 	</properties>
 
 	<dependencies>
@@ -325,6 +327,11 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.11.0.3922</version>
+			</plugin>
 		</plugins>
 	</build>
 </project>
