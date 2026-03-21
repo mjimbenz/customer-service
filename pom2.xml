@@ -5,11 +5,13 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-
+	<!-- ============================================================= -->
+	<!--              SPRING BOOT 3.2.x + SPRING CLOUD 2023.x          -->
+	<!-- ============================================================= -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.4</version>
+		<version>3.3.2</version>
 		<relativePath/>
 	</parent>
 
@@ -29,14 +31,12 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
-			<version>5.0.1</version>
 		</dependency>
 
 		<!-- Eureka -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-			<version>5.0.1</version>
 		</dependency>
 
 		<!-- Lombok -->
@@ -96,7 +96,7 @@
 		<dependency>
 			<groupId>io.reactivex.rxjava3</groupId>
 			<artifactId>rxjava</artifactId>
-			<version>3.1.12</version>
+			<version>${rxjava3.version}</version>
 		</dependency>
 
 		<!-- Resilience4j -->
