@@ -5,7 +5,6 @@ import com.bank.customer.api.model.Customer;
 import com.bank.customer.api.model.CustomerRequest;
 import com.bank.customer.service.CustomerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
