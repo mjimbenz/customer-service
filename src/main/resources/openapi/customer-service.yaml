@@ -5,7 +5,7 @@ info:
   description: Customer management microservice for bank system.
 
 servers:
-  - url: /api/v1/customers
+  - url: http://localhost:8081
 
 paths:
 
