@@ -3,10 +3,9 @@ spring:
     name: customer-service
 
   config:
-    import: "configserver:http://localhost:8888"
-
+    import: "configserver:http://localhost:8888" #config-server
 
   cloud:
     config:
-      uri: http://localhost:8888
+      uri: http://localhost:8888 #config-server
       fail-fast: true

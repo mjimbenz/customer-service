@@ -115,9 +115,6 @@
 			<version>2.2.0</version>
 		</dependency>
 
-
-
-
 	</dependencies>
 
 	<build>
@@ -127,7 +124,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>3.3.2</version>
 				<configuration>
-					<mainClass>com.splitcart.product.ProductApplication</mainClass>
+					<mainClass>com.bank.customer.CustomerServiceApplication</mainClass>
 				</configuration>
 			</plugin>
 
