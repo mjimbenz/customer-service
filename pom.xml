@@ -23,7 +23,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<jacoco.version>0.8.8</jacoco.version>
 		<sonar.host.url>http://localhost:9095</sonar.host.url>
-		<sonar.token>sqa_42487ae4f625ebe7af4a79af5dc2803c78d7afe4</sonar.token>
+		<sonar.token>${env.SONAR_TOKEN}</sonar.token>
 	</properties>
 
 	<dependencies>
@@ -314,7 +314,7 @@
 										<limit>
 											<counter>INSTRUCTION</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.1</minimum>
+											<minimum>0.6</minimum>
 										</limit>
 									</limits>
 								</rule>
